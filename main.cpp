@@ -2,15 +2,35 @@
 #include <iostream>
 #include <vector>
 
-template <class T>
-class Merge {
+class vectComparison {
 public:
-    Merge(int a[], int start, int mid, int end);
-    static void merge_sort(int a[], int from, int to);
-    static bool sorted (int a[], int n);
+    vectComparison(int vectComp);
+    vectComparison();
+    friend bool operator< (const vectComparison &l, const vectComparison &r);
+    friend bool operator> (const vectComparison &l, const vectComparison &r);
+private:
+    int vectComp;
 };
+
+vectComparison::vectComparison(int g) {
+    vectComp = g;
+}
+
+vectComparison::vectComparison(){
+    vectComp = 0;
+}
+
+bool operator< (const vectComparison &left, const vectComparison &right)
+{
+    return left.vectComp < right.vectComp;
+}
+
+bool operator> (const vectComparison &left, const vectComparison &right) {
+    return left.vectComp > right.vectComp;
+}
+
 template <class T>
-Merge::Merge(int a[], int start, int mid, int end) {
+void Merge(std::vector<T> & a, int start, int mid, int end) {
     int n = end - start + 1;
     std::vector<T> b(n);
     int i1 = start;
@@ -44,7 +64,7 @@ Merge::Merge(int a[], int start, int mid, int end) {
 }
 
 template <class T>
-void Merge::merge_sort(int a[], int from, int to) {
+void merge_sort(std::vector<T> & a, int from, int to) {
     if (from == to) return;
     int mid = (from + to) / 2;
     merge_sort(a, from, mid);
@@ -53,7 +73,7 @@ void Merge::merge_sort(int a[], int from, int to) {
 }
 
 template <class T>
-bool Merge::sorted(int a[], int n) {
+bool sorted(std::vector<T> & a, int n) {
     for (int i = 0; i < n -1; ++i) {
         if (a[i] > a[i + 1])
             return false;
@@ -62,19 +82,29 @@ bool Merge::sorted(int a[], int n) {
 }
 
 int main (int argc, char * args[]) {
-    int a[1000];
+    std::vector<int> a(1000);
     for (int i = 0; i < 1000; ++i) a[i] = -50 + rand() % 100;
-    Merge::merge_sort(a, 0, 999);
-    assert(Merge::sorted(a, 1000));
-    int b[1001];
+    merge_sort(a, 0, 999);
+    assert(sorted(a, 1000));
+    std::vector<int> b(1001);
     for (int i = 0; i < 1001; ++i) b[i] = -50 + rand() % 100;
-    Merge::merge_sort(b, 0, 1000);
-    assert(Merge::sorted(b, 1001));
-    int c[] = { 2 };
-    Merge::merge_sort(c, 0, 1);
-    assert(Merge::sorted(c, 1));
-    int d[] = { 1, 2, 3, 4, 5 };
-    Merge::merge_sort(d, 0, 4);
-    assert(Merge::sorted(d, 5));
+    merge_sort(b, 0, 1000);
+    assert(sorted(b, 1001));
+    std::vector <int> c(2);
+    merge_sort(c, 0, 1);
+    assert(sorted(c, 1));
+    std::vector <int> d(5);
+    merge_sort(d, 0, 4);
+    assert(sorted(d, 5));
+
+    std::vector<vectComparison> e(5);
+    for (int i = 4; i >= 0; i--) {
+        vectComparison vect(i);
+        e[i] = vect;
+    }
+    merge_sort(e, 0, 4);
+    assert(sorted(e, 4));
+
     std::cout << "All tests passed." << std::endl;
+
 }
